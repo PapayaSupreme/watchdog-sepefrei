@@ -5,14 +5,26 @@ import StatsPage from './pages/StatsPage.jsx';
 
 export default function App() {
   return (
-    <main className="container">
-      <nav className="nav">
-        <h2>Watchdog</h2>
-        <div>
+    <main className="container app-shell">
+      <header className="brand-banner">
+        <div className="brand-main">
+          <img
+            src="/sepefrei-logo.svg"
+            alt="SEPEFREI logo"
+            width="56"
+            height="56"
+            className="brand-logo"
+          />
+          <div>
+            <h2>Watchdog</h2>
+            <p className="brand-subtitle">SEPEFREI uptime supervision</p>
+          </div>
+        </div>
+        <nav className="nav">
           <Link to="/">Dashboard</Link>
           <Link to="/stats">Stats</Link>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <Routes>
         <Route path="/" element={<DashboardPage />} />

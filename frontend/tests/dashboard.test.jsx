@@ -7,7 +7,6 @@ vi.mock('../src/api/client.js', () => ({
     getMonitors: vi.fn().mockResolvedValue([
       { id: 1, name: 'SEPEFREI', url: 'https://sepefrei.fr', current_status: 'up' },
     ]),
-    createMonitor: vi.fn(),
   },
 }));
 
@@ -24,6 +23,8 @@ describe('DashboardPage', () => {
     await waitFor(() => {
       expect(screen.getByText('SEPEFREI')).toBeInTheDocument();
     });
+
+    expect(screen.queryByText('Add monitor')).not.toBeInTheDocument();
   });
 });
 

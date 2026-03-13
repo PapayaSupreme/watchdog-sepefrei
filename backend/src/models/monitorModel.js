@@ -32,18 +32,6 @@ export async function getMonitorById(id) {
   return result.rows[0] ?? null;
 }
 
-export async function createMonitor({ name, url, frequencySeconds }) {
-  const result = await query(
-    `
-    INSERT INTO monitors (name, url, frequency_seconds, next_check_at)
-    VALUES ($1, $2, $3, NOW())
-    RETURNING id, name, url, frequency_seconds, created_at, updated_at
-    `,
-    [name, url, frequencySeconds],
-  );
-
-  return result.rows[0];
-}
 
 export async function claimDueMonitors(batchSize) {
   const result = await query(

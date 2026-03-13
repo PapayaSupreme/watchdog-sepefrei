@@ -1,29 +1,28 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import AddMonitorForm from '../src/components/AddMonitorForm.jsx';
 
-describe('AddMonitorForm', () => {
-  it('submits monitor payload', () => {
-    const onSubmit = vi.fn();
+vi.mock('../src/api/client.js', () => ({
+  api: {
+    getMonitors: vi.fn().mockResolvedValue([]),
+  },
+}));
 
-    render(<AddMonitorForm onSubmit={onSubmit} loading={false} />);
+import DashboardPage from '../src/pages/DashboardPage.jsx';
 
-    fireEvent.change(screen.getByLabelText('Name'), {
-      target: { value: 'Site A' },
-    });
-    fireEvent.change(screen.getByLabelText('URL'), {
-      target: { value: 'https://example.com' },
-    });
-    fireEvent.change(screen.getByLabelText('Frequency (seconds)'), {
-      target: { value: '30' },
-    });
-    fireEvent.click(screen.getByText('Create monitor'));
+describe('Dashboard without add monitor flow', () => {
+  it('does not render create monitor controls', async () => {
+    render(
+      <BrowserRouter>
+        <DashboardPage />
+      </BrowserRouter>,
+    );
 
-    expect(onSubmit).toHaveBeenCalledWith({
-      name: 'Site A',
-      url: 'https://example.com',
-      frequencySeconds: 30,
+    await waitFor(() => {
+      expect(screen.getByText('Monitored sites')).toBeInTheDocument();
     });
+
+    expect(screen.queryByText('Create monitor')).not.toBeInTheDocument();
   });
 });
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client.js';
 import ReportDownForm from '../components/ReportDownForm.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
@@ -8,6 +8,7 @@ import { formatDate, formatDuration } from '../utils/format.js';
 
 export default function MonitorDetailsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [monitor, setMonitor] = useState(null);
   const [logs, setLogs] = useState([]);
   const [outages, setOutages] = useState([]);
@@ -52,6 +53,13 @@ export default function MonitorDetailsPage() {
 
   return (
     <section>
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => navigate('/')}
+      >
+        Back to dashboard
+      </button>
       <h1>{monitor.name}</h1>
       <p>{monitor.url}</p>
       <StatusBadge status={monitor.current_status} />

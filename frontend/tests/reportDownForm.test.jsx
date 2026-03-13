@@ -21,5 +21,24 @@ describe('ReportDownForm', () => {
       message: 'HTTP 500 observed',
     });
   });
+
+  it('sanitizes user text before submit', () => {
+    const onSubmit = vi.fn();
+
+    render(<ReportDownForm onSubmit={onSubmit} />);
+
+    fireEvent.change(screen.getByLabelText('Reporter'), {
+      target: { value: '  <b>Nina</b>   ' },
+    });
+    fireEvent.change(screen.getByLabelText('Message (optional)'), {
+      target: { value: '  Site   looks   <script>down</script>  ' },
+    });
+    fireEvent.click(screen.getByText('Send report'));
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      reporterName: 'bNina/b',
+      message: 'Site looks scriptdown/script',
+    });
+  });
 });
 

@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const monitorModelMock = vi.hoisted(() => ({
   listMonitors: vi.fn(),
-  createMonitor: vi.fn(),
   getMonitorById: vi.fn(),
 }));
 
@@ -38,17 +37,14 @@ describe('API endpoints', () => {
     vi.clearAllMocks();
   });
 
-  it('creates a monitor', async () => {
-    monitorModelMock.createMonitor.mockResolvedValue({ id: 10, name: 'Site' });
-
+  it('does not allow creating a monitor', async () => {
     const response = await request(app).post('/api/monitors').send({
       name: 'Site',
       url: 'https://example.com',
       frequencySeconds: 30,
     });
 
-    expect(response.status).toBe(201);
-    expect(response.body.id).toBe(10);
+    expect(response.status).toBe(404);
   });
 
   it('lists monitors', async () => {

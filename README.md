@@ -75,13 +75,14 @@ watchdog-sepefrei/
 ## API endpoints
 
 - `GET /api/monitors`
-- `POST /api/monitors`
 - `GET /api/monitors/:id`
 - `GET /api/logs/:id`
 - `GET /api/stats`
 - `POST /api/monitors/:id/reports`
 - `GET /api/monitors/:id/reports`
 - `GET /api/monitors/:id/outages`
+
+Monitors are currently managed through database seed/SQL scripts for this MVP.
 
 ## Database schema
 

@@ -19,11 +19,6 @@ async function request(path, options = {}) {
 
 export const api = {
   getMonitors: () => request('/monitors'),
-  createMonitor: (data) =>
-    request('/monitors', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
   getMonitor: (id) => request(`/monitors/${id}`),
   getLogs: (id) => request(`/logs/${id}`),
   getReports: (id) => request(`/monitors/${id}/reports`),

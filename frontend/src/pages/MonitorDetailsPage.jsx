@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client.js';
+import PingHistoryChart from '../components/PingHistoryChart.jsx';
 import ReportDownForm from '../components/ReportDownForm.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { usePolling } from '../hooks/usePolling.js';
@@ -67,33 +68,8 @@ export default function MonitorDetailsPage() {
 
       <div className="grid">
         <div className="card table-card">
-          <h3>Ping history</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>Status</th>
-                <th>HTTP</th>
-                <th>Response</th>
-                <th>Error</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((log) => (
-                <tr key={log.id}>
-                  <td>{formatDate(log.checked_at)}</td>
-                  <td>
-                    <StatusBadge status={log.status} />
-                  </td>
-                  <td>{log.http_status ?? '-'}</td>
-                  <td>
-                    {log.response_time_ms != null ? `${log.response_time_ms} ms` : '-'}
-                  </td>
-                  <td>{log.error_message ?? '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h3>Ping response trend</h3>
+          <PingHistoryChart logs={logs} />
         </div>
 
         <div className="card table-card">

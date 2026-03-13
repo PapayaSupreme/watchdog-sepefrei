@@ -4,7 +4,7 @@ import { api } from '../api/client.js';
 import DownAlert from '../components/DownAlert.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { usePolling } from '../hooks/usePolling.js';
-import { formatDate } from '../utils/format.js';
+import { formatDate, formatRelativeTime } from '../utils/format.js';
 
 export default function DashboardPage() {
   const [monitors, setMonitors] = useState([]);
@@ -39,6 +39,7 @@ export default function DashboardPage() {
       ? monitor.last_checked_at
       : latest;
   }, null);
+  const checkedCount = monitors.filter((monitor) => Boolean(monitor.last_checked_at)).length;
 
   return (
     <section>
@@ -48,8 +49,14 @@ export default function DashboardPage() {
       <div className="card">
         <h3>Monitored sites</h3>
         <div className="last-check-panel">
-          <span className="last-check-label">Latest successful sweep</span>
+          <span className="last-check-label">Latest check</span>
           <strong className="last-check-value">{formatDate(latestCheckedAt)}</strong>
+          <div className="last-check-meta">
+            <span>{formatRelativeTime(latestCheckedAt)}</span>
+            <span>
+              {checkedCount}/{monitors.length} monitors checked
+            </span>
+          </div>
         </div>
         <div className="monitor-grid">
           {monitors.map((monitor) => (

@@ -9,7 +9,7 @@ export default function App() {
       <header className="brand-banner">
         <div className="brand-main">
           <img
-            src="/sepefrei-logo.svg"
+            src="/sepefrei-logo.png"
             alt="SEPEFREI logo"
             width="56"
             height="56"

@@ -131,6 +131,17 @@ npm run dev
 
 ## Tests
 
+Run all project tests from the repository root:
+```bash
+npm run test:all
+```
+
+Run a single test suite from the root:
+```bash
+npm run test:backend
+npm run test:frontend
+```
+
 Backend:
 ```bash
 cd backend

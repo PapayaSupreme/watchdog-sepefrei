@@ -1,172 +1,102 @@
 # Watchdog
 
-Watchdog is a full-stack uptime monitoring MVP for a Junior Enterprise internal supervision tool.
+Watchdog is a full-stack uptime monitoring MVP for SEPEFREI's websites.
 
-It provides:
-- automatic website checks with outage/recovery detection
-- ping history and outage history
-- manual "site is down" user reports
-- global availability statistics
+## 1) Tech stack and websites monitored
 
-## Tech stack
+### Tech stack
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
 - Database: PostgreSQL
 - Containerization: Docker + Docker Compose
 
-## Project structure
+### Websites monitored
 
-```text
-watchdog-sepefrei/
-  backend/
-	db/
-	  init.sql
-	src/
-	  config/
-	  controllers/
-	  jobs/
-	  models/
-	  routes/
-	  services/
-	  utils/
-	  app.js
-	  server.js
-	tests/
-	Dockerfile
-	package.json
-  frontend/
-	src/
-	  api/
-	  components/
-	  hooks/
-	  pages/
-	  utils/
-	  App.jsx
-	  main.jsx
-	  styles.css
-	tests/
-	Dockerfile
-	package.json
-  docker-compose.yml
-  .env.example
-  README.md
-```
+- `https://sepefrei.fr`
+- `https://link.sepefrei.fr`
+- `https://etudiant.sepefrei.fr`
+- `https://portainer.sepefrei.fr`
+- `https://plausible.sepefrei.fr`
+- `https://n8n.sepefrei.fr`
 
-## Main features delivered
+## 2) API routes
 
-1. **Automatic monitoring**
-   - scheduler checks each monitor based on `frequency_seconds`
-   - each ping is saved in `ping_logs` with status, latency, http status, and error
-   - outages are opened/closed automatically in `outages`
-
-2. **Failure history**
-   - full ping history per monitor (`GET /api/logs/:id`)
-   - outage history per monitor (`GET /api/monitors/:id/outages`)
-
-3. **Manual user down signal**
-   - `POST /api/monitors/:id/reports` stores user reports
-   - one report per hour per client IP and per monitor is allowed
-   - reports displayed on monitor details page
-   - strong signal highlighted when several reports happen in a short window
-
-4. **Statistics**
-   - `GET /api/stats` returns uptime %, total downtime, interruptions, avg response time
-
-## API endpoints
-
+- `GET /api/health`
 - `GET /api/monitors`
 - `GET /api/monitors/:id`
 - `GET /api/logs/:id`
 - `GET /api/stats`
-- `POST /api/monitors/:id/reports`
 - `GET /api/monitors/:id/reports`
+- `POST /api/monitors/:id/reports`
 - `GET /api/monitors/:id/outages`
 
-Monitors are currently managed through database seed/SQL scripts for this MVP.
+## 3) Database structure
 
-## Database schema
+Schema is initialized from `backend/db/init.sql`.
 
-Initialized from `backend/db/init.sql`:
-- `monitors`
-- `ping_logs`
-- `incident_reports`
-- `outages`
+### `monitors`
 
-Raw `ping_logs` are automatically pruned after 7 days, while `outages` remain available for longer-term incident history.
+- `id`
+- `name`
+- `url`
+- `frequency_seconds`
+- `next_check_at`
+- `created_at`
+- `updated_at`
 
-Seeded monitors:
-- `sepefrei.fr`
-- `link.sepefrei.fr`
-- `etudiant.sepefrei.fr`
-- `portainer.sepefrei.fr`
-- `plausible.sepefrei.fr`
-- `n8n.sepefrei.fr`
+### `ping_logs`
 
-## Run with Docker (one command)
+- `id`
+- `monitor_id`
+- `checked_at`
+- `status` (`up`, `down`, `timeout`, `error`)
+- `http_status`
+- `response_time_ms`
+- `error_message`
+
+### `incident_reports`
+
+- `id`
+- `monitor_id`
+- `reporter_name`
+- `reporter_ip`
+- `message`
+- `created_at`
+
+### `outages`
+
+- `id`
+- `monitor_id`
+- `started_at`
+- `ended_at`
+- `duration_seconds`
+- `detection_type` (`automatic`, `user`, `mixed`)
+- `cause`
+
+### Retention behavior
+
+- Raw `ping_logs` are pruned after 7 days.
+- Outage history remains available in `outages` for longer-term incident tracking.
+
+## 4) Docker setup & service addresses
+
+Start all services with:
 
 ```bash
 docker-compose up --build
 ```
 
-Services:
+Service addresses:
+
 - Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:4000/api`
+- Backend API base: `http://localhost:4000/api`
 - PostgreSQL: `localhost:5432`
+<br><br>
 
-## Local development (without Docker)
+*Limitation note:*
 
-### 1) Backend
+- Manual outage report rate limiting is currently based **only** on raw client IP (`reporter_ip`) per monitor (1 report/hour), with no authentication identity layer yet.
 
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-### 2) Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## Tests
-
-Run all project tests from the repository root:
-```bash
-npm run test:all
-```
-
-Run a single test suite from the root:
-```bash
-npm run test:backend
-npm run test:frontend
-```
-
-Backend:
-```bash
-cd backend
-npm test
-```
-
-Frontend:
-```bash
-cd frontend
-npm test
-```
-
-## Architecture notes
-
-- Backend is layered (`routes -> controllers -> services/models`).
-- Scheduler logic is isolated in `backend/src/jobs/scheduler.js`.
-- Current monitor status is derived from the latest ping log.
-- UI uses polling refresh every 10 seconds.
-- The scheduler deletes `ping_logs` older than `PING_LOG_RETENTION_DAYS` once every `LOG_CLEANUP_INTERVAL_MS`.
-
-## Current limitations
-
-- No authentication/authorization yet.
-- No notification channels (email, Slack, SMS) yet.
-- Scheduler runs in-process with the API container (single-service MVP choice).
+**Contact:** `pablo.ferreiraa10@gmail.com` <br>
+*Made in 2026 by Pablo Ferreira*

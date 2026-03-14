@@ -14,6 +14,7 @@ const reportModelMock = vi.hoisted(() => ({
   listReportsByMonitor: vi.fn(),
   createReport: vi.fn(),
   countRecentReports: vi.fn(),
+  getRecentReportByIp: vi.fn(),
 }));
 
 const outageModelMock = vi.hoisted(() => ({
@@ -68,16 +69,46 @@ describe('API endpoints', () => {
 
   it('creates report site down', async () => {
     monitorModelMock.getMonitorById.mockResolvedValue({ id: 1 });
+    reportModelMock.getRecentReportByIp.mockResolvedValue(null);
     reportModelMock.createReport.mockResolvedValue({ id: 2, monitor_id: 1 });
     reportModelMock.countRecentReports.mockResolvedValue(3);
 
-    const response = await request(app).post('/api/monitors/1/reports').send({
-      reporterName: 'Ana',
-      message: 'Seems unavailable',
-    });
+    const response = await request(app)
+      .post('/api/monitors/1/reports')
+      .set('X-Forwarded-For', '203.0.113.10')
+      .send({
+        reporterName: 'Ana',
+        message: 'Seems unavailable',
+      });
 
     expect(response.status).toBe(201);
     expect(response.body.strongSignal).toBe(true);
+    expect(reportModelMock.createReport).toHaveBeenCalledWith({
+      monitorId: 1,
+      reporterIp: '203.0.113.10',
+      reporterName: 'Ana',
+      message: 'Seems unavailable',
+    });
+  });
+
+  it('rate limits repeated reports from the same user for the same monitor', async () => {
+    monitorModelMock.getMonitorById.mockResolvedValue({ id: 1 });
+    reportModelMock.getRecentReportByIp.mockResolvedValue({
+      id: 9,
+      created_at: new Date(),
+    });
+
+    const response = await request(app)
+      .post('/api/monitors/1/reports')
+      .set('X-Forwarded-For', '203.0.113.10')
+      .send({
+        reporterName: 'Ana',
+        message: 'Still down',
+      });
+
+    expect(response.status).toBe(429);
+    expect(response.body.retryAfterSeconds).toBeGreaterThanOrEqual(0);
+    expect(reportModelMock.createReport).not.toHaveBeenCalled();
   });
 
   it('returns stats', async () => {

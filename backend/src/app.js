@@ -7,6 +7,7 @@ import { statsRoutes } from './routes/statsRoutes.js';
 
 export const app = express();
 
+app.set('trust proxy', true);
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());

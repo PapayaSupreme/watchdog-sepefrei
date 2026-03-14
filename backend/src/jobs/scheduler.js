@@ -1,5 +1,9 @@
 import { env } from '../config/env.js';
-import { createPingLog, getLastTwoStatuses } from '../models/logModel.js';
+import {
+  createPingLog,
+  deletePingLogsBefore,
+  getLastTwoStatuses,
+} from '../models/logModel.js';
 import { claimDueMonitors } from '../models/monitorModel.js';
 import {
   closeOutage,
@@ -8,6 +12,8 @@ import {
 } from '../models/outageModel.js';
 import { pingUrl } from '../services/pingService.js';
 import { evaluateOutageTransition } from '../services/outageService.js';
+
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 async function processMonitor(monitor) {
   const pingResult = await pingUrl(monitor.url);
@@ -42,11 +48,30 @@ async function processMonitor(monitor) {
   }
 }
 
+export async function cleanupOldPingLogs(now = new Date()) {
+  const cutoff = new Date(
+    now.getTime() - env.pingLogRetentionDays * DAY_IN_MS,
+  );
+
+  return deletePingLogsBefore(cutoff);
+}
+
+export async function runSchedulerCycle(state = { lastCleanupAt: 0 }, now = new Date()) {
+  const monitors = await claimDueMonitors(env.schedulerBatchSize);
+  await Promise.all(monitors.map((monitor) => processMonitor(monitor)));
+
+  if (now.getTime() - state.lastCleanupAt >= env.logCleanupIntervalMs) {
+    await cleanupOldPingLogs(now);
+    state.lastCleanupAt = now.getTime();
+  }
+}
+
 export function startScheduler() {
+  const state = { lastCleanupAt: 0 };
+
   const run = async () => {
     try {
-      const monitors = await claimDueMonitors(env.schedulerBatchSize);
-      await Promise.all(monitors.map((monitor) => processMonitor(monitor)));
+      await runSchedulerCycle(state);
     } catch (error) {
       console.error('[scheduler] run failed:', error.message);
     }

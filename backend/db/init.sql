@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS incident_reports (
   id BIGSERIAL PRIMARY KEY,
   monitor_id INTEGER NOT NULL REFERENCES monitors(id) ON DELETE CASCADE,
   reporter_name VARCHAR(80) NOT NULL,
+  reporter_ip VARCHAR(45),
   message TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -41,6 +42,12 @@ CREATE INDEX IF NOT EXISTS idx_ping_logs_monitor_checked
 
 CREATE INDEX IF NOT EXISTS idx_reports_monitor_created
   ON incident_reports (monitor_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_reports_monitor_reporter_created
+  ON incident_reports (monitor_id, LOWER(reporter_name), created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_reports_monitor_ip_created
+  ON incident_reports (monitor_id, reporter_ip, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_outages_monitor_started
   ON outages (monitor_id, started_at DESC);

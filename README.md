@@ -66,6 +66,7 @@ watchdog-sepefrei/
 
 3. **Manual user down signal**
    - `POST /api/monitors/:id/reports` stores user reports
+   - one report per hour per client IP and per monitor is allowed
    - reports displayed on monitor details page
    - strong signal highlighted when several reports happen in a short window
 
@@ -91,6 +92,8 @@ Initialized from `backend/db/init.sql`:
 - `ping_logs`
 - `incident_reports`
 - `outages`
+
+Raw `ping_logs` are automatically pruned after 7 days, while `outages` remain available for longer-term incident history.
 
 Seeded monitors:
 - `sepefrei.fr`
@@ -160,6 +163,7 @@ npm test
 - Scheduler logic is isolated in `backend/src/jobs/scheduler.js`.
 - Current monitor status is derived from the latest ping log.
 - UI uses polling refresh every 10 seconds.
+- The scheduler deletes `ping_logs` older than `PING_LOG_RETENTION_DAYS` once every `LOG_CLEANUP_INTERVAL_MS`.
 
 ## Current limitations
 

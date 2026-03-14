@@ -71,3 +71,15 @@ export async function listLogsInRange(from, to) {
   return result.rows;
 }
 
+export async function deletePingLogsBefore(cutoff) {
+  const result = await query(
+    `
+    DELETE FROM ping_logs
+    WHERE checked_at < $1
+    `,
+    [cutoff],
+  );
+
+  return result.rowCount ?? 0;
+}
+

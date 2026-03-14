@@ -11,5 +11,7 @@ export const env = {
   requestTimeoutMs: Number(process.env.REQUEST_TIMEOUT_MS ?? 8000),
   schedulerIntervalMs: Number(process.env.SCHEDULER_INTERVAL_MS ?? 5000),
   schedulerBatchSize: Number(process.env.SCHEDULER_BATCH_SIZE ?? 10),
+  pingLogRetentionDays: Number(process.env.PING_LOG_RETENTION_DAYS ?? 7),
+  logCleanupIntervalMs: Number(process.env.LOG_CLEANUP_INTERVAL_MS ?? 3600000),
 };
 

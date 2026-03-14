@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { z } from 'zod';
 
+// Sanitizes free-text input (value) by stripping angle brackets, normalizing spaces, and returning trimmed text.
 const sanitizeText = (value) => value.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
 
 const reportSchema = z.object({
@@ -16,11 +17,13 @@ const reportSchema = z.object({
     .default(''),
 });
 
+// Renders the manual outage report form (onSubmit), posts validated payload upward, and returns form JSX.
 export default function ReportDownForm({ onSubmit }) {
   const [reporterName, setReporterName] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Handles report form submit (event), validates/sanitizes inputs, calls onSubmit(payload), and updates local error/UI state.
   function handleSubmit(event) {
     event.preventDefault();
     const parsed = reportSchema.safeParse({ reporterName, message });

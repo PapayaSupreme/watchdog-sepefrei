@@ -15,6 +15,7 @@ import { evaluateOutageTransition } from '../services/outageService.js';
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
+// Processes one claimed monitor row (monitor): pings URL, stores log, evaluates transition, and opens/closes outages.
 async function processMonitor(monitor) {
   const pingResult = await pingUrl(monitor.url);
 
@@ -48,6 +49,7 @@ async function processMonitor(monitor) {
   }
 }
 
+// Computes retention cutoff from now and configured days (now), deletes old ping logs, and returns deleted row count.
 export async function cleanupOldPingLogs(now = new Date()) {
   const cutoff = new Date(
     now.getTime() - env.pingLogRetentionDays * DAY_IN_MS,
@@ -56,6 +58,7 @@ export async function cleanupOldPingLogs(now = new Date()) {
   return deletePingLogsBefore(cutoff);
 }
 
+// Runs one scheduler cycle (state, now): claims due monitors, processes probes, optionally runs log cleanup, and mutates cleanup timestamp.
 export async function runSchedulerCycle(state = { lastCleanupAt: 0 }, now = new Date()) {
   const monitors = await claimDueMonitors(env.schedulerBatchSize);
   await Promise.all(monitors.map((monitor) => processMonitor(monitor)));
@@ -66,6 +69,7 @@ export async function runSchedulerCycle(state = { lastCleanupAt: 0 }, now = new 
   }
 }
 
+// Starts recurring scheduler execution with configured interval and returns the interval handle.
 export function startScheduler() {
   const state = { lastCleanupAt: 0 };
 

@@ -9,6 +9,7 @@ import { createReportSchema } from '../utils/validation.js';
 
 const REPORT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
+// Extracts client IP from req headers/socket (req) for proxy-aware rate limiting and returns a normalized IP string.
 function getClientIp(req) {
   const forwardedFor = req.headers['x-forwarded-for'];
   const forwardedIp = Array.isArray(forwardedFor)
@@ -19,6 +20,7 @@ function getClientIp(req) {
   return rawIp.replace(/^::ffff:/, '');
 }
 
+// Handles GET /monitors/:id/reports (req, res, next), validates monitor id, fetches reports, and returns JSON or 404.
 export async function getReports(req, res, next) {
   try {
     const monitorId = Number(req.params.id);
@@ -35,6 +37,7 @@ export async function getReports(req, res, next) {
   }
 }
 
+// Handles POST /monitors/:id/reports (req, res, next), validates body, enforces per-IP hourly limit, creates report, and returns created payload or 429/400/404.
 export async function postReport(req, res, next) {
   try {
     const monitorId = Number(req.params.id);

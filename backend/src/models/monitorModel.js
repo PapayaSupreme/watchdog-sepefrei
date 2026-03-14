@@ -22,17 +22,20 @@ const monitorSelect = `
   ) pl ON true
 `;
 
+// Queries all monitors with latest ping-derived status fields and returns rows sorted by monitor id.
 export async function listMonitors() {
   const result = await query(`${monitorSelect} ORDER BY m.id ASC`);
   return result.rows;
 }
 
+// Queries one monitor by id (id) with latest ping-derived status fields and returns a row or null.
 export async function getMonitorById(id) {
   const result = await query(`${monitorSelect} WHERE m.id = $1`, [id]);
   return result.rows[0] ?? null;
 }
 
 
+// Atomically claims due monitors (batchSize) by moving next_check_at forward and returns claimed monitor rows for scheduler processing.
 export async function claimDueMonitors(batchSize) {
   const result = await query(
     `

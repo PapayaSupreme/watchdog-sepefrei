@@ -1,6 +1,7 @@
 import { getMonitorById } from '../models/monitorModel.js';
 import { listOutagesByMonitor } from '../models/outageModel.js';
 
+// Handles GET /monitors/:id/outages (req, res, next), validates monitor, fetches outage history, and returns JSON or 404.
 export async function getOutages(req, res, next) {
   try {
     const monitorId = Number(req.params.id);

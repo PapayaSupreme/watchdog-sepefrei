@@ -6,10 +6,12 @@ import StatusBadge from '../components/StatusBadge.jsx';
 import { usePolling } from '../hooks/usePolling.js';
 import { formatDate, formatRelativeTime } from '../utils/format.js';
 
+// Renders dashboard monitor cards (no args), polls monitor status, and shows latest-check and down-alert summaries.
 export default function DashboardPage() {
   const [monitors, setMonitors] = useState([]);
   const [error, setError] = useState('');
 
+  // Fetches monitor list from API, updates local state, and captures request error text for UI display.
   async function loadMonitors() {
     try {
       const data = await api.getMonitors();

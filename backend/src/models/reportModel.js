@@ -1,5 +1,6 @@
 import { query } from '../config/db.js';
 
+// Inserts a manual incident report (monitorId, reporterName, reporterIp, message) and returns the created report row.
 export async function createReport({
   monitorId,
   reporterName,
@@ -18,6 +19,7 @@ export async function createReport({
   return result.rows[0];
 }
 
+// Fetches the most recent report for a monitor/IP pair (monitorId, reporterIp, hoursWindow) and returns a row or null.
 export async function getRecentReportByIp(monitorId, reporterIp, hoursWindow = 1) {
   const result = await query(
     `
@@ -35,6 +37,7 @@ export async function getRecentReportByIp(monitorId, reporterIp, hoursWindow = 1
   return result.rows[0] ?? null;
 }
 
+// Lists recent reports for one monitor (monitorId, limit) and returns rows ordered by newest first.
 export async function listReportsByMonitor(monitorId, limit = 100) {
   const result = await query(
     `
@@ -50,6 +53,7 @@ export async function listReportsByMonitor(monitorId, limit = 100) {
   return result.rows;
 }
 
+// Counts reports submitted in a rolling minute window (monitorId, minutesWindow) and returns an integer total.
 export async function countRecentReports(monitorId, minutesWindow = 15) {
   const result = await query(
     `

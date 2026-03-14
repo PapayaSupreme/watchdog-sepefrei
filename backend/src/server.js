@@ -14,6 +14,7 @@ if (env.nodeEnv !== 'test') {
   schedulerHandle = startScheduler();
 }
 
+// Gracefully stops scheduler/server and closes DB pool on process signals before exiting.
 const shutdown = async () => {
   if (schedulerHandle) {
     clearInterval(schedulerHandle);

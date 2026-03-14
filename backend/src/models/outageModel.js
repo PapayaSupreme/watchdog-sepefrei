@@ -1,5 +1,6 @@
 import { query } from '../config/db.js';
 
+// Inserts a new outage row (monitorId, startedAt, detectionType, cause) and returns the created outage.
 export async function openOutage({ monitorId, startedAt, detectionType, cause }) {
   const result = await query(
     `
@@ -13,6 +14,7 @@ export async function openOutage({ monitorId, startedAt, detectionType, cause })
   return result.rows[0];
 }
 
+// Fetches the currently open outage for a monitor (monitorId) and returns the latest open row or null.
 export async function getOpenOutageByMonitor(monitorId) {
   const result = await query(
     `
@@ -28,6 +30,7 @@ export async function getOpenOutageByMonitor(monitorId) {
   return result.rows[0] ?? null;
 }
 
+// Closes an outage by id (outageId, endedAt), computes duration in SQL, and returns the updated outage or null.
 export async function closeOutage({ outageId, endedAt }) {
   const result = await query(
     `
@@ -44,6 +47,7 @@ export async function closeOutage({ outageId, endedAt }) {
   return result.rows[0] ?? null;
 }
 
+// Lists outage history for one monitor (monitorId, limit) and returns rows ordered by most recent start time.
 export async function listOutagesByMonitor(monitorId, limit = 100) {
   const result = await query(
     `
@@ -59,6 +63,7 @@ export async function listOutagesByMonitor(monitorId, limit = 100) {
   return result.rows;
 }
 
+// Aggregates outage counts and downtime totals inside a date range (from, to) and returns one totals row.
 export async function getOutageTotals(from, to) {
   const result = await query(
     `

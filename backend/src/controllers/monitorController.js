@@ -3,6 +3,7 @@ import {
   listMonitors,
 } from '../models/monitorModel.js';
 
+// Handles GET /monitors (req, res, next), reads monitors from DB, and returns a JSON monitor list.
 export async function getMonitors(req, res, next) {
   try {
     const monitors = await listMonitors();
@@ -12,6 +13,7 @@ export async function getMonitors(req, res, next) {
   }
 }
 
+// Handles GET /monitors/:id (req, res, next), fetches one monitor by route id, and returns JSON or 404.
 export async function getMonitor(req, res, next) {
   try {
     const monitor = await getMonitorById(Number(req.params.id));

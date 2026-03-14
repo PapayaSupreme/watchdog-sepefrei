@@ -7,8 +7,10 @@ export const pool = new Pool({
   connectionString: env.databaseUrl,
 });
 
+// Executes one SQL statement (text, params) against PostgreSQL and returns the pg result promise.
 export const query = (text, params) => pool.query(text, params);
 
+// Ensures incident report schema compatibility at startup by adding reporter_ip column/index when missing.
 export async function ensureDatabaseSchema() {
   await query(`
     ALTER TABLE incident_reports

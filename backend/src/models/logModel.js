@@ -1,5 +1,6 @@
 import { query } from '../config/db.js';
 
+// Inserts one ping log record (monitor/status/timing payload) into ping_logs and returns the created row.
 export async function createPingLog({
   monitorId,
   checkedAt,
@@ -27,6 +28,7 @@ export async function createPingLog({
   return result.rows[0];
 }
 
+// Fetches recent ping logs for one monitor (monitorId, limit) and returns rows ordered by newest check first.
 export async function listLogsByMonitor(monitorId, limit = 100) {
   const result = await query(
     `
@@ -42,6 +44,7 @@ export async function listLogsByMonitor(monitorId, limit = 100) {
   return result.rows;
 }
 
+// Fetches the two latest statuses for a monitor (monitorId) to evaluate outage transitions and returns up to two rows.
 export async function getLastTwoStatuses(monitorId) {
   const result = await query(
     `
@@ -57,6 +60,7 @@ export async function getLastTwoStatuses(monitorId) {
   return result.rows;
 }
 
+// Fetches ping logs between from/to timestamps for stats aggregation and returns rows ordered by check time ascending.
 export async function listLogsInRange(from, to) {
   const result = await query(
     `
@@ -71,6 +75,7 @@ export async function listLogsInRange(from, to) {
   return result.rows;
 }
 
+// Deletes ping logs older than cutoff date (cutoff) and returns the number of deleted rows.
 export async function deletePingLogsBefore(cutoff) {
   const result = await query(
     `

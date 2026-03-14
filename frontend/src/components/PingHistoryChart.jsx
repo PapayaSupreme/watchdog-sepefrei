@@ -1,5 +1,6 @@
 import { formatDate } from '../utils/format.js';
 
+// Builds an SVG response-time trend from log rows (logs) and returns either chart JSX or an insufficient-data message.
 export default function PingHistoryChart({ logs }) {
   const data = [...logs]
     .filter(

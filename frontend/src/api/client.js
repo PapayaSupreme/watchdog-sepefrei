@@ -1,5 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+// Performs one HTTP request (path, options) to backend API, parses JSON, and returns data or throws Error on non-2xx.
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: {
@@ -17,6 +18,7 @@ async function request(path, options = {}) {
   return response.json();
 }
 
+// Exposes typed API calls for monitor, log, report, outage, and stats endpoints; each method returns parsed JSON.
 export const api = {
   getMonitors: () => request('/monitors'),
   getMonitor: (id) => request(`/monitors/${id}`),

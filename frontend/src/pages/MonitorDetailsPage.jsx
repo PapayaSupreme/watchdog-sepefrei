@@ -7,6 +7,7 @@ import StatusBadge from '../components/StatusBadge.jsx';
 import { usePolling } from '../hooks/usePolling.js';
 import { formatDate, formatDuration } from '../utils/format.js';
 
+// Renders one monitor detail view (no args), loads monitor/logs/outages/reports, and handles manual report submission.
 export default function MonitorDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function MonitorDetailsPage() {
   const [reports, setReports] = useState([]);
   const [message, setMessage] = useState('');
 
+  // Fetches monitor detail datasets in parallel (id) and stores them in component state.
   async function loadData() {
     const [monitorData, logData, outageData, reportData] = await Promise.all([
       api.getMonitor(id),
@@ -30,6 +32,7 @@ export default function MonitorDetailsPage() {
     setReports(reportData);
   }
 
+  // Posts a manual down report payload (payload), updates feedback message, and refreshes monitor data.
   async function submitReport(payload) {
     const created = await api.createReport(id, payload);
     setMessage(

@@ -1,6 +1,7 @@
 import { listLogsInRange } from '../models/logModel.js';
 import { getOutageTotals } from '../models/outageModel.js';
 
+// Computes uptime/failure and latency metrics from ping log rows (logs) and returns an aggregated stats object.
 export function calculateStatsFromLogs(logs) {
   if (logs.length === 0) {
     return {
@@ -34,6 +35,7 @@ export function calculateStatsFromLogs(logs) {
   };
 }
 
+// Fetches logs/outage totals for a period ({ from, to }), merges calculations, and returns the global stats payload.
 export async function getGlobalStats({ from, to }) {
   const [logs, outageTotals] = await Promise.all([
     listLogsInRange(from, to),

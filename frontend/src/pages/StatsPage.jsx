@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { api } from '../api/client.js';
 import { usePolling } from '../hooks/usePolling.js';
 
+// Renders global KPI cards (no args), polls backend stats endpoint, and displays API errors when present.
 export default function StatsPage() {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState('');

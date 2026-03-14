@@ -1,6 +1,7 @@
 import { listLogsByMonitor } from '../models/logModel.js';
 import { getMonitorById } from '../models/monitorModel.js';
 
+// Handles GET /logs/:id (req, res, next), validates monitor id, fetches ping logs with optional limit, and returns JSON or 404.
 export async function getMonitorLogs(req, res, next) {
   try {
     const monitorId = Number(req.params.id);

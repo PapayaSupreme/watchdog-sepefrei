@@ -1,3 +1,4 @@
+// Displays a warning banner for active outages (downCount) and returns null when all monitors are up.
 export default function DownAlert({ downCount }) {
   if (downCount === 0) {
     return null;

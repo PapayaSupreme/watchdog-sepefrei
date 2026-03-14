@@ -1,6 +1,7 @@
 import { env } from '../config/env.js';
 import { classifyHttpStatus } from './statusService.js';
 
+// Performs a timed HTTP GET probe (url, timeoutMs), classifies result/timeout/error, and returns normalized ping metadata.
 export async function pingUrl(url, timeoutMs = env.requestTimeoutMs) {
   const controller = new AbortController();
   const startTime = Date.now();

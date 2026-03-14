@@ -1,5 +1,6 @@
 import { getGlobalStats } from '../services/statsService.js';
 
+// Handles GET /stats (req, res, next), computes date range from query params, fetches aggregate stats, and returns JSON.
 export async function getStats(req, res, next) {
   try {
     const now = new Date();

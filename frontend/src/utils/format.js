@@ -1,3 +1,4 @@
+// Formats a date-like value (dateValue) into local date/time text and returns '-' when empty.
 export function formatDate(dateValue) {
   if (!dateValue) {
     return '-';
@@ -6,6 +7,7 @@ export function formatDate(dateValue) {
   return new Date(dateValue).toLocaleString();
 }
 
+// Formats a duration in seconds (seconds) into compact human-readable text and returns '-' when nullish.
 export function formatDuration(seconds) {
   if (seconds == null) {
     return '-';
@@ -20,6 +22,7 @@ export function formatDuration(seconds) {
   return `${minutes}m ${remaining}s`;
 }
 
+// Converts a date-like value (dateValue) into relative time text like '5m ago' and returns '-' when empty.
 export function formatRelativeTime(dateValue) {
   if (!dateValue) {
     return '-';

@@ -3,6 +3,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import MonitorDetailsPage from './pages/MonitorDetailsPage.jsx';
 import StatsPage from './pages/StatsPage.jsx';
 
+// Renders the app shell and router views (no args), wiring dashboard, monitor details, and global stats pages.
 export default function App() {
   return (
     <main className="container app-shell">

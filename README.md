@@ -1,6 +1,7 @@
 # Watchdog
 
-Watchdog is a full-stack uptime monitoring MVP for SEPEFREI's websites.
+Watchdog is a full-stack uptime monitoring MVP for SEPEFREI's websites. <br>
+*A l'attention de SEPEFREI: le cachier des charges est rempli avec en bonus des signalements utilisateur, une base de donnée optimisée et shardable, ainsi qu'un minimum de sécurité.*
 
 ## 1) Tech stack and websites monitored
 
